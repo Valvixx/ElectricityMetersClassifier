@@ -7,8 +7,9 @@ from ultralytics import YOLO
 from classification import load_classifier_model, transform
 
 
+PROJECT_DIR = Path(__file__).resolve().parents[1]
 INPUT_DIR = Path("/home/valvixx/Downloads/Meters/")
-OUTPUT_DIR = Path("/home/valvixx/Downloads/Datasets/")
+OUTPUT_DIR = Path("/home/valvixx/Downloads/Datasets copy/")
 OLD_DIR_NAME = "Old"
 NEW_DIR_NAME = "New"
 CROP_PADDING = 0.15
@@ -16,10 +17,17 @@ CROP_PADDING = 0.15
 SUPPORTED_EXTENSIONS = {".jpg", ".jpeg", ".png", ".bmp", ".webp", ".tif", ".tiff"}
 
 
+def resolve_project_path(path):
+    candidate = Path(path)
+    if candidate.is_absolute():
+        return candidate
+    return PROJECT_DIR / candidate
+
+
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 classifier_model = load_classifier_model(device=device)
-model_yolo_old = YOLO("../runs/segment/train3/weights/best.pt")
-model_yolo_new = YOLO("../runs/segment/train5/weights/best.pt")
+model_yolo_old = YOLO(resolve_project_path("runs/segment/train3/weights/best.pt"))
+model_yolo_new = YOLO(resolve_project_path("runs/segment/train5/weights/best.pt"))
 
 
 def classify_image(image):
@@ -30,17 +38,21 @@ def classify_image(image):
     return "Old" if predicted == 1 else "New"
 
 
-def build_output_path(output_dir, source_path):
-    candidate = output_dir / source_path.name
-    if not candidate.exists():
-        return candidate
+def get_next_image_number(output_dir):
+    highest_number = 0
 
-    counter = 1
-    while True:
-        candidate = output_dir / f"{source_path.stem}_{counter}{source_path.suffix.lower()}"
-        if not candidate.exists():
-            return candidate
-        counter += 1
+    for file_path in output_dir.iterdir():
+        if not file_path.is_file() or file_path.suffix.lower() not in SUPPORTED_EXTENSIONS:
+            continue
+
+        if file_path.stem.isdigit():
+            highest_number = max(highest_number, int(file_path.stem))
+
+    return highest_number + 1
+
+
+def build_output_path(output_dir, next_number, source_path):
+    return output_dir / f"{next_number}{source_path.suffix.lower()}"
 
 
 def crop_meter(image, image_path, meter_type):
@@ -68,6 +80,10 @@ def process_images():
     new_dir = OUTPUT_DIR / NEW_DIR_NAME
     old_dir.mkdir(parents=True, exist_ok=True)
     new_dir.mkdir(parents=True, exist_ok=True)
+    next_numbers = {
+        "Old": get_next_image_number(old_dir),
+        "New": get_next_image_number(new_dir),
+    }
 
     for image_path in sorted(INPUT_DIR.rglob("*")):
         if not image_path.is_file() or image_path.suffix.lower() not in SUPPORTED_EXTENSIONS:
@@ -88,8 +104,9 @@ def process_images():
             continue
 
         destination_dir = old_dir if meter_type == "Old" else new_dir
-        output_path = build_output_path(destination_dir, image_path)
+        output_path = build_output_path(destination_dir, next_numbers[meter_type], image_path)
         cropped_image.save(output_path)
+        next_numbers[meter_type] += 1
         print(f"Saved {meter_type}: {output_path}")
 
 

@@ -4,7 +4,7 @@ from PIL import Image, UnidentifiedImageError
 
 
 SUPPORTED_EXTENSIONS = {".jpg", ".jpeg", ".png", ".bmp", ".webp", ".tif", ".tiff"}
-INPUT_DIR = Path("/home/valvixx/Downloads/г Белинский/")
+INPUT_DIR = Path("/home/valvixx/Downloads/1/")
 OUTPUT_DIR = Path("/home/valvixx/Downloads/Meters")
 
 
