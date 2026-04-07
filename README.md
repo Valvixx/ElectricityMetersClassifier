@@ -19,16 +19,16 @@
 - Hugging Face Transformers для TrOCR
 - Ultralytics YOLOv8 для детекции/сегментации области счётчика
 
-Ключевые зависимости зафиксированы в [requirements.txt](/home/valvixx/Documents/Secon/requirements.txt).
+Ключевые зависимости зафиксированы в [requirements.txt](requirements.txt).
 
 ## Структура проекта
 
-- [main.py](/home/valvixx/Documents/Secon/main.py) - Flask API и production-пайплайн инференса
-- [classification.py](/home/valvixx/Documents/Secon/classification.py) - обучение и загрузка классификаторов на базе ResNet18
-- [support_scripts/train_trocr.py](/home/valvixx/Documents/Secon/support_scripts/train_trocr.py) - обучение OCR-моделей TrOCR
-- [support_scripts/train_ocr_type_classifier.py](/home/valvixx/Documents/Secon/support_scripts/train_ocr_type_classifier.py) - обучение классификатора `printed` / `handwritten`
-- [support_scripts/evaluate_ocr_models.py](/home/valvixx/Documents/Secon/support_scripts/evaluate_ocr_models.py) - оценка OCR и экспорт результатов в CSV
-- [support_scripts/ocr_eval_results/combined_local3.csv](/home/valvixx/Documents/Secon/support_scripts/ocr_eval_results/combined_local3.csv) - основной подробный отчёт по качеству
+- [main.py](main.py) - Flask API и production-пайплайн инференса
+- [classification.py](classification.py) - обучение и загрузка классификаторов на базе ResNet18
+- [support_scripts/train_trocr.py](support_scripts/train_trocr.py) - обучение OCR-моделей TrOCR
+- [support_scripts/train_ocr_type_classifier.py](support_scripts/train_ocr_type_classifier.py) - обучение классификатора `printed` / `handwritten`
+- [support_scripts/evaluate_ocr_models.py](support_scripts/evaluate_ocr_models.py) - оценка OCR и экспорт результатов в CSV
+- [support_scripts/ocr_eval_results/combined_local3.csv](support_scripts/ocr_eval_results/combined_local3.csv) - основной подробный отчёт по качеству
 
 ## Как работает сервис
 
@@ -135,7 +135,7 @@ OCR построен на `VisionEncoderDecoderModel` из Transformers. Все 
 
 ### OCR
 
-Скрипт [support_scripts/train_trocr.py](/home/valvixx/Documents/Secon/support_scripts/train_trocr.py) обучает TrOCR с такими ключевыми параметрами:
+Скрипт [support_scripts/train_trocr.py](support_scripts/train_trocr.py) обучает TrOCR с такими ключевыми параметрами:
 
 - базовая модель: `microsoft/trocr-base-printed`
 - `epochs=14`
@@ -159,7 +159,7 @@ OCR построен на `VisionEncoderDecoderModel` из Transformers. Все 
 
 ### Классификатор OCR-типа
 
-Скрипт [support_scripts/train_ocr_type_classifier.py](/home/valvixx/Documents/Secon/support_scripts/train_ocr_type_classifier.py) обучает бинарный классификатор `printed` / `handwritten`:
+Скрипт [support_scripts/train_ocr_type_classifier.py](support_scripts/train_ocr_type_classifier.py) обучает бинарный классификатор `printed` / `handwritten`:
 
 - `epochs=15`
 - `batch_size=32`
@@ -168,13 +168,13 @@ OCR построен на `VisionEncoderDecoderModel` из Transformers. Все 
 
 ### Классификатор типа счётчика
 
-Скрипт [classification.py](/home/valvixx/Documents/Secon/classification.py) также обучает ResNet18 для классов `new` / `old`.
+Скрипт [classification.py](classification.py) также обучает ResNet18 для классов `new` / `old`.
 
 В коде сохраняется лучший checkpoint по `val accuracy`.
 
 ## Результаты
 
-Ниже приведены результаты, которые подтверждаются файлом [support_scripts/ocr_eval_results/combined_local3.csv](/home/valvixx/Documents/Secon/support_scripts/ocr_eval_results/combined_local3.csv). Это самая надёжная таблица в репозитории для описания достигнутого качества.
+Ниже приведены результаты, которые подтверждаются файлом [support_scripts/ocr_eval_results/combined_local3.csv](support_scripts/ocr_eval_results/combined_local3.csv). Это самая надёжная таблица в репозитории для описания достигнутого качества.
 
 ### Общие результаты по движкам
 
